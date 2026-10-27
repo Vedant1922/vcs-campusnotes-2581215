@@ -3,6 +3,10 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
+# Runtime
+*.log
+*.corrupt
+
 # Editors
 .vscode/
 .idea/
