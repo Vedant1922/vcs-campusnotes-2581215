@@ -10,6 +10,7 @@ python campusnotes.py add "VCS Assignment 2" "Due session 30, submit PDF on LMS"
 python campusnotes.py list
 python campusnotes.py search "vcs"
 python campusnotes.py delete "VCS Assignment 2"
+python campusnotes.py export notes.md
 ```
 
 ## Features
@@ -17,6 +18,7 @@ python campusnotes.py delete "VCS Assignment 2"
 - List all notes (sorted)
 - Case-insensitive keyword search across title and body
 - Delete notes by title
+- Export all notes to a single Markdown file
 
 ## Tests
 ```bash

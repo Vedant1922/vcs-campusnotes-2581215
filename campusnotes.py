@@ -56,6 +56,17 @@ class NotesApp:
         return [n for n in self.list_all() if k in n["title"].lower()
                 or k in n["body"].lower()]
 
+    def export_markdown(self, path):
+        """Write all notes to a single Markdown file. Returns note count."""
+        lines = ["# CampusNotes export", ""]
+        for note in self.list_all():
+            lines.append(f"## {note['title']}\n")
+            lines.append(note["body"] or "")
+            lines.append("")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+        return len(self.notes)
+
 
 def main(argv):
     app = NotesApp()
@@ -74,8 +85,11 @@ def main(argv):
             print(f'Deleted note "{argv[2]}"')
         else:
             print(f'No note titled "{argv[2]}"')
+    elif len(argv) >= 3 and argv[1] == "export":
+        count = app.export_markdown(argv[2])
+        print(f'Exported {count} notes to {argv[2]}')
     else:
-        print("usage: campusnotes.py <add|list|search|delete> ...")
+        print("usage: campusnotes.py <add|list|search|delete|export> ...")
         return 1
     return 0
 

@@ -41,6 +41,16 @@ class NotesAppTest(unittest.TestCase):
         reloaded = campusnotes.NotesApp(path=self.path)
         self.assertIn("notes", reloaded.notes)
 
+    def test_export_markdown(self):
+        self.app.add("Git", "version control basics")
+        out = os.path.join(os.path.dirname(self.path), "export.md")
+        count = self.app.export_markdown(out)
+        self.assertEqual(count, 1)
+        with open(out, encoding="utf-8") as f:
+            text = f.read()
+        self.assertIn("## Git", text)
+        self.assertIn("version control basics", text)
+
 
 if __name__ == "__main__":
     unittest.main()
