@@ -56,6 +56,11 @@ class NotesApp:
         return [n for n in self.list_all() if k in n["title"].lower()
                 or k in n["body"].lower()]
 
+    @staticmethod
+    def word_count(note):
+        """Number of words in a note's body."""
+        return len(note.get("body", "").split())
+
     def export_markdown(self, path):
         """Write all notes to a single Markdown file. Returns note count."""
         lines = ["# CampusNotes export", ""]
@@ -76,7 +81,8 @@ def main(argv):
         print(f'Added note "{title}"')
     elif len(argv) >= 2 and argv[1] == "list":
         for note in app.list_all():
-            print(f"- {note['title']}")
+            wc = NotesApp.word_count(note)
+            print(f"- {note['title']}  ({wc} words)")
     elif len(argv) >= 3 and argv[1] == "search":
         for note in app.search(argv[2]):
             print(f"- {note['title']}")
