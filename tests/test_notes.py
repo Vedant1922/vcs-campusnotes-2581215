@@ -51,6 +51,13 @@ class NotesAppTest(unittest.TestCase):
         self.assertIn("## Git", text)
         self.assertIn("version control basics", text)
 
+    def test_corrupt_file_recovers(self):
+        with open(self.path, "w", encoding="utf-8") as f:
+            f.write("{ this is not json")
+        recovered = campusnotes.NotesApp(path=self.path)
+        self.assertEqual(recovered.notes, {})
+        self.assertTrue(os.path.exists(self.path + ".corrupt"))
+
 
 if __name__ == "__main__":
     unittest.main()

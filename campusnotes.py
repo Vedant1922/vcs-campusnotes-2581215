@@ -20,10 +20,23 @@ class NotesApp:
 
     def _load(self):
         if os.path.exists(self.path):
-            with open(self.path, "r", encoding="utf-8") as f:
-                self.notes = json.load(f)
+            try:
+                with open(self.path, "r", encoding="utf-8") as f:
+                    self.notes = json.load(f)
+            except json.JSONDecodeError:
+                backup = self.path + ".corrupt"
+                os.replace(self.path, backup)
+                self.notes = {}
+                self._log(f"recovered corrupt notes file -> {backup}")
         else:
             self.notes = {}
+
+    @staticmethod
+    def _log(message):
+        """Append a line to a local runtime log (git-ignored)."""
+        log_path = os.path.join(os.path.dirname(__file__), "campusnotes.log")
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(message + "\n")
 
     def _save(self):
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
