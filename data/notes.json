@@ -1,10 +1,10 @@
 {
-  "VCS Assignment 2": {
-    "body": "GitHub collaboration, PRs, tags and git hooks. Due session 30; submit PDF with screenshots and repo link on LMS.",
-    "title": "VCS Assignment 2"
-  },
   "Class schedule": {
     "body": "VCS lab on Tuesday; OOPS practical on Thursday.",
     "title": "Class schedule"
+  },
+  "VCS Assignment 2": {
+    "body": "GitHub collaboration, PRs, tags and git hooks. Due session 30; submit PDF with screenshots and repo link on LMS.",
+    "title": "VCS Assignment 2"
   }
 }
