@@ -1,0 +1,23 @@
+#!/bin/sh
+# pre-commit: reject a commit when any STAGED file contains TODO or FIXME.
+# Checks the staged blob (what would actually be committed), not the working tree.
+
+files=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$files" ] && exit 0
+
+status=0
+while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    if git show ":$f" 2>/dev/null | grep -nE 'TODO|FIXME' > /dev/null 2>&1; then
+        echo "pre-commit: $f still contains TODO/FIXME:"
+        git show ":$f" | grep -nE 'TODO|FIXME' | sed 's/^/    /'
+        status=1
+    fi
+done <<EOF
+$files
+EOF
+
+if [ "$status" -ne 0 ]; then
+    echo "pre-commit: BLOCKED. Resolve the TODO/FIXME markers (or bypass with --no-verify, not recommended)."
+    exit 1
+fi

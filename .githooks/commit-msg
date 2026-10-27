@@ -1,0 +1,22 @@
+#!/bin/sh
+# commit-msg: reject messages shorter than 10 characters, or that do not
+# start with a Conventional Commits type (feat:, fix:, docs:, refactor:, chore:).
+
+msg=$(head -n 1 "$1" | sed 's/[[:space:]]*$//')
+
+len=${#msg}
+if [ "$len" -lt 10 ]; then
+    echo "commit-msg: BLOCKED. Message is ${len} characters (need at least 10)."
+    exit 1
+fi
+
+case "$msg" in
+    feat:*|fix:*|docs:*|refactor:*|chore:*)
+        exit 0
+        ;;
+    *)
+        echo "commit-msg: BLOCKED. Must start with feat:, fix:, docs:, refactor: or chore:."
+        echo "  Got: $msg"
+        exit 1
+        ;;
+esac
