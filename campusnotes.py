@@ -86,30 +86,57 @@ class NotesApp:
         return len(self.notes)
 
 
-def main(argv):
-    app = NotesApp()
-    if len(argv) >= 3 and argv[1] == "add":
-        title, body = argv[2], " ".join(argv[3:])
-        app.add(title, body)
-        print(f'Added note "{title}"')
-    elif len(argv) >= 2 and argv[1] == "list":
-        for note in app.list_all():
-            wc = NotesApp.word_count(note)
-            print(f"- {note['title']}  ({wc} words)")
-    elif len(argv) >= 3 and argv[1] == "search":
-        for note in app.search(argv[2]):
-            print(f"- {note['title']}")
-    elif len(argv) >= 3 and argv[1] == "delete":
-        if app.delete(argv[2]):
-            print(f'Deleted note "{argv[2]}"')
-        else:
-            print(f'No note titled "{argv[2]}"')
-    elif len(argv) >= 3 and argv[1] == "export":
-        count = app.export_markdown(argv[2])
-        print(f'Exported {count} notes to {argv[2]}')
+def _cmd_add(args, app):
+    title, body = args[0], " ".join(args[1:])
+    app.add(title, body)
+    print(f'Added note "{title}"')
+
+
+def _cmd_list(args, app):
+    for note in app.list_all():
+        print(f"- {note['title']}  ({NotesApp.word_count(note)} words)")
+
+
+def _cmd_search(args, app):
+    for note in app.search(args[0]):
+        print(f"- {note['title']}")
+
+
+def _cmd_delete(args, app):
+    title = args[0]
+    if app.delete(title):
+        print(f'Deleted note "{title}"')
     else:
-        print("usage: campusnotes.py <add|list|search|delete|export> ...")
+        print(f'No note titled "{title}"')
+
+
+def _cmd_export(args, app):
+    count = app.export_markdown(args[0])
+    print(f'Exported {count} notes to {args[0]}')
+
+
+COMMANDS = {
+    "add": _cmd_add,
+    "list": _cmd_list,
+    "search": _cmd_search,
+    "delete": _cmd_delete,
+    "export": _cmd_export,
+}
+
+USAGE = "usage: campusnotes.py <add|list|search|delete|export> ..."
+
+
+def main(argv):
+    if len(argv) < 2 or argv[1] not in COMMANDS:
+        print(USAGE)
         return 1
+    if argv[1] == "list":
+        COMMANDS["list"](None, NotesApp())
+        return 0
+    if len(argv) < 3:
+        print(USAGE)
+        return 1
+    COMMANDS[argv[1]](argv[2:], NotesApp())
     return 0
 
 
